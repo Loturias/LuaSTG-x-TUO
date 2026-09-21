@@ -15,7 +15,7 @@
 	url = https://github.com/Xrysnow/cocos2d-x-video.git
 [submodule "frameworks/external"]
 	path = frameworks/external
-	url = https://github.com/Xrysnow/lstgx_external.git
+	url = https://github.com/Loturias/lstgx_external_tuo.git
 [submodule "frameworks/cocos2d-x"]
 	path = frameworks/cocos2d-x
 	url = https://github.com/Xrysnow/cocos-x.git
