@@ -24,8 +24,11 @@
 #include "main.h"
 #include "cocos2d.h"
 #include "AppFrame.h"
+#include "SteamWin32.h"
 
 USING_NS_CC;
+
+#define USE_WIN32_CONSOLE
 
 int WINAPI _tWinMain(HINSTANCE hInstance,
                        HINSTANCE hPrevInstance,
@@ -36,6 +39,18 @@ int WINAPI _tWinMain(HINSTANCE hInstance,
     UNREFERENCED_PARAMETER(lpCmdLine);
 
 	bool useConsole = false;
+
+    int res = SteamPreProcess();
+    if (res == STEAM_INIT_FAILED)
+    {
+        SteamPostProcess();
+#ifdef STEAM_REQUIRED
+        return -1;
+#else
+        
+#endif
+    }
+
 	std::vector<std::string> args;
 	for (int i = 0; i < __argc; ++i)
 	{
@@ -60,5 +75,6 @@ int WINAPI _tWinMain(HINSTANCE hInstance,
 	if (useConsole)
 		FreeConsole();
 
+    SteamPostProcess();
     return ret;
 }

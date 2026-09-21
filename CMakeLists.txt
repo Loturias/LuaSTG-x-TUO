@@ -33,11 +33,17 @@ option(LSTGX_NO_YUESCRIPT "No Yuescript module"   ON)
 option(LSTGX_USE_ANGLE    "Use angle on windows" OFF)
 option(LSTGX_USE_GFX      "Use GFX beckend"       ON)
 
+# 是否启用SteamAPI
+option(LSTGX_USE_STEAM    "Use Steam API"         ON)
+
+
 message("LSTGX_NO_LIVE2D: ${LSTGX_NO_LIVE2D}")
 message("LSTGX_NO_VIDEO: ${LSTGX_NO_VIDEO}")
 message("LSTGX_NO_YUESCRIPT: ${LSTGX_NO_YUESCRIPT}")
 message("LSTGX_USE_ANGLE: ${LSTGX_USE_ANGLE}")
 message("LSTGX_USE_GFX: ${LSTGX_USE_GFX}")
+
+message("LSTGX_USE_STEAM:" ${LSTGX_USE_STEAM})
 
 set(CC_USE_ANGLE LSTGX_USE_ANGLE)
 set(CC_USE_GFX LSTGX_USE_GFX)

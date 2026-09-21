@@ -120,6 +120,12 @@ if(WINDOWS)
 		target_compile_definitions(cocos2d PUBLIC CC_USE_ANGLE)
 		list(APPEND EXTERNAL_LIBS ext_ANGLE ext_ANGLE_es2)
 	endif()
+	# Steam API
+	if(LSTGX_USE_STEAM)
+		add_subdirectory(${LSTGX_EXT_ROOT}/SteamSDK)
+		target_include_directories(${APP_NAME} PUBLIC ${LSTGX_EXT_ROOT}/SteamSDK/Steam)
+		list(APPEND EXTERNAL_LIBS ext_steam)
+	endif()
 endif()
 
 if(LINUX)
