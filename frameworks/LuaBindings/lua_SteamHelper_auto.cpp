@@ -44,6 +44,20 @@ int lua_lstg_SteamHelper_GetSteamLanguage(lua_State* lua_S)
 	LUA_SINVOKE_FOOTER("0");
 }
 
+int lua_lstg_SteamHelper_getSteamID(lua_State* lua_S)
+{
+	LUA_SINVOKE_HEADER("lstg.SteamHelper", "lstg.SteamHelper:getSteamID");
+	LUA_TRY_INVOKE_R(0, &lstg::SteamConfigHelper::getSteamID);
+	LUA_SINVOKE_FOOTER("0");
+}
+
+int lua_lstg_SteamHelper_getUserName(lua_State* lua_S)
+{
+	LUA_SINVOKE_HEADER("lstg.SteamHelper", "lstg.SteamHelper:getUserName");
+	LUA_TRY_INVOKE_R(0, &lstg::SteamConfigHelper::getUserName);
+	LUA_SINVOKE_FOOTER("0");
+}
+
 int luaReg_SteamHelper_lstgSteamHelper(lua_State* lua_S)
 {
     LUA_ENTRY("lstg");
@@ -56,6 +70,8 @@ int luaReg_SteamHelper_lstgSteamHelper(lua_State* lua_S)
 	LUA_METHOD("resetAchievement", lua_lstg_SteamHelper_resetAchievement);
 	LUA_METHOD("getAchievementStatus", lua_lstg_SteamHelper_getAchievementStatus);
 	LUA_METHOD("getSteamLanguage", lua_lstg_SteamHelper_GetSteamLanguage);
+	LUA_METHOD("getSteamID", lua_lstg_SteamHelper_getSteamID);
+	LUA_METHOD("getUserName", lua_lstg_SteamHelper_getUserName);
     LUA_CLS_END();
     LUA_ENTRY_END(1);
     return 0;
