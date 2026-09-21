@@ -4,6 +4,7 @@
 #include "Renderer.h"
 #include "Util/UtilLua.h"
 #include "Util/UtilLuaRes.h"
+#include "lua_conversion/lua_conversion.hpp"
 #include "../Classes/XLuaModuleRegistry.h"
 
 using namespace std;
@@ -25,7 +26,7 @@ LUA_REGISTER_FUNC_DEF(lstg, RenderText)
 	auto valign = TextVAlignment::TOP;
 	if (lua_gettop(L) == 6)
 		TranslateAlignMode(L, 6, halign, valign);
-	auto p = lua::toResFont(L, 1);
+	auto p = lstg::lua::toResFont(L, 1);
 	if (!p)
 		return error_find(L, 1);
 	if (!LRR.renderText(
@@ -34,6 +35,42 @@ LUA_REGISTER_FUNC_DEF(lstg, RenderText)
 		(float)luaL_checknumber(L, 3),
 		(float)luaL_checknumber(L, 4),
 		(float)(L_IMG_FACTOR * luaL_optnumber(L, 5, 1.0)),
+		halign,
+		valign
+	))
+	{
+		return error_render(L, 1);
+	}
+	return 0;
+}
+LUA_REGISTER_FUNC_DEF(lstg, RenderText3D)
+{
+	auto halign = TextHAlignment::LEFT;
+	auto valign = TextVAlignment::TOP;
+	if (lua_gettop(L) >= 7)
+		TranslateAlignMode(L, 7, halign, valign);
+
+	auto p = lstg::lua::toResFont(L, 1);
+	if (!p)
+		return error_find(L, 1);
+
+	Vec3 target;
+	Vec3 normal;
+	Vec3 up;
+	if (!::lua::luaval_to_native(L, 3, &target, "lstg.RenderText3D") ||
+		!::lua::luaval_to_native(L, 4, &normal, "lstg.RenderText3D") ||
+		!::lua::luaval_to_native(L, 5, &up, "lstg.RenderText3D"))
+	{
+		return luaL_error(L, "invalid Vec3 arguments for 'RenderText3D'.");
+	}
+
+	if (!LRR.renderText3D(
+		p,
+		luaL_checkstring(L, 2),
+		target,
+		normal,
+		up,
+		(float)(L_IMG_FACTOR * luaL_optnumber(L, 6, 1.0)),
 		halign,
 		valign
 	))
@@ -56,7 +93,7 @@ LUA_REGISTER_FUNC_DEF(lstg, RenderTTF)
 		auto valign = TextVAlignment::TOP;
 		TranslateAlignMode(L, 7, halign, valign);
 		auto rect = Rect(left, bottom, right - left, top - bottom);
-		auto p = lua::toResFont(L, 1);
+		auto p = lstg::lua::toResFont(L, 1);
 		if (!p)
 		{
 			return error_find(L, 1);
@@ -69,7 +106,7 @@ LUA_REGISTER_FUNC_DEF(lstg, RenderTTF)
 			L_IMG_FACTOR * float(luaL_optnumber(L, 9, 1.0))*0.5,
 			halign,
 			valign,
-			lua::luaval_to_c4b(L, 8)
+			lstg::lua::luaval_to_c4b(L, 8)
 		))
 		{
 			return error_render(L, 1);
@@ -77,7 +114,7 @@ LUA_REGISTER_FUNC_DEF(lstg, RenderTTF)
 	}
 	else//@xry
 	{
-		auto p = lua::toResFont(L, 1);
+		auto p = lstg::lua::toResFont(L, 1);
 		if (!p)
 			return error_find(L, 1);
 
@@ -99,7 +136,7 @@ LUA_REGISTER_FUNC_DEF(lstg, RenderTTF)
 }
 LUA_REGISTER_FUNC_DEF(lstg, CalcTextSize)
 {
-	auto p = lua::toResFont(L, 1);
+	auto p = lstg::lua::toResFont(L, 1);
 	if (!p)
 		return error_find(L, 1);
 	const auto size = p->calcSize(luaL_checkstring(L, 2));

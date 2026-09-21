@@ -5,6 +5,7 @@
 #include "Util/Utility.h"
 #include "LogSystem.h"
 #include "renderer/backend/Backend.h"
+#include <cfloat>
 #if CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID
 #include <EGL/egl.h>
 #endif
@@ -648,6 +649,72 @@ bool XRenderer::renderText(ResFont* p, const std::string& str,
 	//label->visit(pRenderer, Mat4::IDENTITY, 0);
 	const auto& proj = Director::getInstance()->getMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_PROJECTION);
 	label->visit(pRenderer, proj.getInversed()*currentProjection, 0);
+
+	return true;
+}
+
+bool XRenderer::renderText3D(ResFont* p, const std::string& str,
+	const Vec3& target, const Vec3& normal, const Vec3& up,
+	float scale, TextHAlignment halign, TextVAlignment valign)noexcept
+{
+	if (!p)
+		return false;
+
+	auto n = normal;
+	if (n.lengthSquared() <= FLT_EPSILON)
+		return false;
+	n.normalize();
+
+	auto u = up - n * up.dot(n);
+	if (u.lengthSquared() <= FLT_EPSILON)
+		return false;
+	u.normalize();
+
+	Vec3 r;
+	Vec3::cross(u, n, &r);
+	if (r.lengthSquared() <= FLT_EPSILON)
+		return false;
+	r.normalize();
+
+	Mat4 model;
+	model.m[0] = r.x; model.m[1] = r.y; model.m[2] = r.z; model.m[3] = 0.f;
+	model.m[4] = u.x; model.m[5] = u.y; model.m[6] = u.z; model.m[7] = 0.f;
+	model.m[8] = n.x; model.m[9] = n.y; model.m[10] = n.z; model.m[11] = 0.f;
+	model.m[12] = target.x; model.m[13] = target.y; model.m[14] = target.z; model.m[15] = 1.f;
+
+	p->setHAlign(halign);
+	p->setVAlign(valign);
+
+	flushTriangles();
+	updateRenderMode(p->getRenderMode());
+
+	auto label = labelPool.getWithResFont(p, str);
+	const auto ha = p->getHAlign();
+	const auto va = p->getVAlign();
+	label->setString(str);
+	label->setAnchorPoint(AlignmentToAnchorPoint(ha, va));
+	label->setAlignment(p->getHAlign(), p->getVAlign());
+	label->setScale(scale, scale);
+	label->setPosition(0.f, 0.f);
+	const auto func = currentRenderMode->getBlendFunc();
+	label->setBlendFunc(func);
+	if (p->getLabelType() == ResFont::LabelType::TTF)
+	{
+		for (int i = 0; i < label->getStringLength(); ++i)
+		{
+			auto sp = label->getLetter(i);
+			if (sp)
+				sp->setBlendFunc(func);
+		}
+	}
+	else
+	{
+		label->setOpacity(p->getColor().a);
+		label->setColor(Color3B(p->getColor()));
+	}
+
+	const auto& proj = Director::getInstance()->getMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_PROJECTION);
+	label->visit(pRenderer, proj.getInversed() * currentProjection * model, 0);
 
 	return true;
 }

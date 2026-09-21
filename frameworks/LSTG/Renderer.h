@@ -167,6 +167,9 @@ namespace lstg
 		bool renderTextAutoAlign(ResFont* p, const std::string& str, const cocos2d::Rect& rect, float scale,
 			cocos2d::TextHAlignment halign, cocos2d::TextVAlignment valign, const cocos2d::Color4B& c)noexcept;
 		bool renderText(ResFont* p, const std::string& str, float x, float y, float width, float height, float scaleX, float scaleY)noexcept;
+		bool renderText3D(ResFont* p, const std::string& str,
+			const cocos2d::Vec3& target, const cocos2d::Vec3& normal, const cocos2d::Vec3& up,
+			float scale, cocos2d::TextHAlignment halign, cocos2d::TextVAlignment valign)noexcept;
 
 		/******************************************************************************/
 
