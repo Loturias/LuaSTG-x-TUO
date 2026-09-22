@@ -11,7 +11,7 @@ namespace lstg
 
 		std::string getSteamLanguage();
 
-		uint64 getSteamID();
+		std::string getSteamID();
 
 		std::string getUserName();
 	private:
