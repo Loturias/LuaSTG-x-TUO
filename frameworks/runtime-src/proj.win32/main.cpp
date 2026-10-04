@@ -24,7 +24,9 @@
 #include "main.h"
 #include "cocos2d.h"
 #include "AppFrame.h"
+#ifdef LSTGX_ENABLE_STEAM
 #include "SteamWin32.h"
+#endif
 
 USING_NS_CC;
 
@@ -40,6 +42,7 @@ int WINAPI _tWinMain(HINSTANCE hInstance,
 
 	bool useConsole = false;
 
+#ifdef LSTGX_ENABLE_STEAM
     int res = SteamPreProcess();
     if (res == STEAM_INIT_FAILED)
     {
@@ -50,6 +53,7 @@ int WINAPI _tWinMain(HINSTANCE hInstance,
         
 #endif
     }
+#endif
 
 	std::vector<std::string> args;
 	for (int i = 0; i < __argc; ++i)
@@ -75,6 +79,8 @@ int WINAPI _tWinMain(HINSTANCE hInstance,
 	if (useConsole)
 		FreeConsole();
 
+#ifdef LSTGX_ENABLE_STEAM
     SteamPostProcess();
+#endif
     return ret;
 }

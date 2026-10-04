@@ -100,6 +100,10 @@ else()
     config_android_shared_libs("org.lstgx.lib" "${CMAKE_CURRENT_SOURCE_DIR}/frameworks/runtime-src/proj.android/app/src")
 endif()
 
+if(GAME_COMPILE_DEFINITIONS)
+    target_compile_definitions(${APP_NAME} PRIVATE ${GAME_COMPILE_DEFINITIONS})
+endif()
+
 target_link_libraries(${APP_NAME} luacocos2d)
 target_include_directories(${APP_NAME} PRIVATE ${GAME_INCLUDE})
 

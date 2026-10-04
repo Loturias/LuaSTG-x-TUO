@@ -7,8 +7,6 @@ set(GAME_HEADER
 	${LSTGX_SRC_ROOT}/Classes/LabelPool.h
 	${LSTGX_SRC_ROOT}/Classes/MemPoolManager.h
 	${LSTGX_SRC_ROOT}/Classes/RandomWELL512.h
-	${LSTGX_SRC_ROOT}/Classes/SteamAchievementHelper.hpp
-	${LSTGX_SRC_ROOT}/Classes/SteamConfigHelper.hpp
 	${LSTGX_SRC_ROOT}/Classes/WindowHelper.h
 	${LSTGX_SRC_ROOT}/Classes/XBinaryHelper.h
 	${LSTGX_SRC_ROOT}/Classes/XBuffer.h
@@ -102,7 +100,6 @@ set(GAME_HEADER
 	${LSTGX_SRC_ROOT}/LuaBindings/lua_RenderMode_auto.hpp
 	${LSTGX_SRC_ROOT}/LuaBindings/lua_ResourceMgr_auto.hpp
 	${LSTGX_SRC_ROOT}/LuaBindings/lua_Resource_auto.hpp
-	${LSTGX_SRC_ROOT}/LuaBindings/lua_SteamHelper_auto.hpp
 	${LSTGX_SRC_ROOT}/LuaBindings/lua_StopWatch_auto.hpp
 	${LSTGX_SRC_ROOT}/LuaBindings/lua_Stream_auto.hpp
 	${LSTGX_SRC_ROOT}/LuaBindings/lua_Triangles_auto.hpp
@@ -115,8 +112,6 @@ set(GAME_SOURCE
 	${LSTGX_SRC_ROOT}/Classes/LabelPool.cpp
 	${LSTGX_SRC_ROOT}/Classes/MemPoolManager.cpp
 	${LSTGX_SRC_ROOT}/Classes/RandomWELL512.cpp
-	${LSTGX_SRC_ROOT}/Classes/SteamAchievementHelper.cpp
-	${LSTGX_SRC_ROOT}/Classes/SteamConfigHelper.cpp
 	${LSTGX_SRC_ROOT}/Classes/WindowHelper.cpp
 	${LSTGX_SRC_ROOT}/Classes/XBinaryHelper.cpp
 	${LSTGX_SRC_ROOT}/Classes/XBuffer.cpp
@@ -207,7 +202,6 @@ set(GAME_SOURCE
 	${LSTGX_SRC_ROOT}/LuaBindings/lua_RenderMode_auto.cpp
 	${LSTGX_SRC_ROOT}/LuaBindings/lua_ResourceMgr_auto.cpp
 	${LSTGX_SRC_ROOT}/LuaBindings/lua_Resource_auto.cpp
-	${LSTGX_SRC_ROOT}/LuaBindings/lua_SteamHelper_auto.cpp
 	${LSTGX_SRC_ROOT}/LuaBindings/lua_StopWatch_auto.cpp
 	${LSTGX_SRC_ROOT}/LuaBindings/lua_Stream_auto.cpp
 	${LSTGX_SRC_ROOT}/LuaBindings/lua_Triangles_auto.cpp
@@ -285,12 +279,21 @@ elseif(WINDOWS)
 		${RUNTIME_SRC_ROOT}/proj.win32/game.rc
         ${RUNTIME_SRC_ROOT}/proj.win32/WindowHelperWin32.cpp
     )
-	if(LSTGX_USE_STEAM)
-        list(APPEND GAME_HEADER
+endif()
+
+# Steam sources are opt-in and are only supported by the Windows SDK layout.
+if(LSTGX_USE_STEAM AND WINDOWS)
+	list(APPEND GAME_HEADER
+		${LSTGX_SRC_ROOT}/Classes/SteamAchievementHelper.hpp
+		${LSTGX_SRC_ROOT}/Classes/SteamConfigHelper.hpp
+		${LSTGX_SRC_ROOT}/LuaBindings/lua_SteamHelper_auto.hpp
 		${RUNTIME_SRC_ROOT}/proj.win32/SteamWin32.h
-    )
-		list(APPEND GAME_HEADER
+	)
+	list(APPEND GAME_SOURCE
+		${LSTGX_SRC_ROOT}/Classes/SteamAchievementHelper.cpp
+		${LSTGX_SRC_ROOT}/Classes/SteamConfigHelper.cpp
+		${LSTGX_SRC_ROOT}/LuaBindings/lua_SteamHelper_auto.cpp
 		${RUNTIME_SRC_ROOT}/proj.win32/SteamWin32.cpp
-    )
-    endif()
+	)
+	list(APPEND GAME_COMPILE_DEFINITIONS LSTGX_ENABLE_STEAM)
 endif()

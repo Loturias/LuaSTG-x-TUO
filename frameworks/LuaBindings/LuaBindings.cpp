@@ -35,8 +35,10 @@ LUA_REGISTER_MODULE(x_Stream, luaReg_Stream);
 LUA_REGISTER_MODULE(x_Triangles, luaReg_Triangles);
 #include "lua_WindowHelper_auto.hpp"
 LUA_REGISTER_MODULE(x_WindowHelper, luaReg_WindowHelper);
+#ifdef LSTGX_ENABLE_STEAM
 #include "lua_SteamHelper_auto.hpp"
 LUA_REGISTER_MODULE(x_SteamHelper, luaReg_SteamHelper);
+#endif
 #include "lua_ZipArchive_auto.hpp"
 LUA_REGISTER_MODULE(x_ZipArchive, luaReg_ZipArchive);
 
