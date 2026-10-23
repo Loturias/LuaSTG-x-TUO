@@ -647,8 +647,15 @@ bool XRenderer::renderText(ResFont* p, const std::string& str,
 	//label->setProgramState(currentRenderMode->getProgramState());// shader is used for effects
 
 	//label->visit(pRenderer, Mat4::IDENTITY, 0);
-	const auto& proj = Director::getInstance()->getMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_PROJECTION);
-	label->visit(pRenderer, proj.getInversed()*currentProjection, 0);
+	// Label captures the Director projection while building its render command and
+	// applies the supplied parent transform to the glyph vertices.  Use the
+	// renderer's logical projection for both operations so a runtime resolution
+	// change cannot leave the two matrices out of sync.
+	auto director = Director::getInstance();
+	const auto projectionBackup = director->getMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_PROJECTION);
+	director->loadMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_PROJECTION, currentProjection);
+	label->visit(pRenderer, Mat4::IDENTITY, 0);
+	director->loadMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_PROJECTION, projectionBackup);
 
 	return true;
 }
@@ -713,8 +720,13 @@ bool XRenderer::renderText3D(ResFont* p, const std::string& str,
 		label->setColor(Color3B(p->getColor()));
 	}
 
-	const auto& proj = Director::getInstance()->getMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_PROJECTION);
-	label->visit(pRenderer, proj.getInversed() * currentProjection * model, 0);
+	// Keep the projection used by Label and the renderer's logical projection
+	// identical.  The model matrix still supplies the requested 3D orientation.
+	auto director = Director::getInstance();
+	const auto projectionBackup = director->getMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_PROJECTION);
+	director->loadMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_PROJECTION, currentProjection);
+	label->visit(pRenderer, model, 0);
+	director->loadMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_PROJECTION, projectionBackup);
 
 	return true;
 }
