@@ -16,12 +16,15 @@
 [submodule "frameworks/external"]
 	path = frameworks/external
 	url = https://github.com/Loturias/lstgx_external_tuo.git
+	branch = develop
 [submodule "frameworks/cocos2d-x"]
 	path = frameworks/cocos2d-x
 	url = https://github.com/Xrysnow/cocos-x.git
 [submodule "src"]
 	path = src
-	url = https://github.com/Xrysnow/lstgx_LuaCore.git
+	url = https://github.com/Loturias/lstgx_LuaCore_tuo.git
+	branch = develop
 [submodule "doc"]
 	path = doc
-	url = https://github.com/Xrysnow/lstgx_Doc.git
+	url = https://github.com/Loturias/lstgx_Doc_tuo.git
+	branch = develop
